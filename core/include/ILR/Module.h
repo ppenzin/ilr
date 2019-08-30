@@ -9,6 +9,30 @@ extern "C" {
 
 namespace ILR {
 
+class Module;
+
+/// Parts of the module, also things that instructions can reference
+enum ReferenceType {
+  Instruction
+};
+
+// TODO consistency enforcement. Saving index is not a guarantee as data can
+// change under that index. Probably a better way is to save the pointer and a
+// checksum for the data.
+
+/// Refer to an entity inside of a module
+template <ReferenceType T>
+class Reference {
+  private:
+  Module * module;
+  ReferenceType type = T;
+  ilr_t index;
+  Reference<T> (); // No default constructor
+  public:
+  Reference<T> (Module * mod, ilr_t ind) : module(mod), index(ind) {}
+};
+
+/// Representation of a (sub)program
 class Module {
 private:
   std::unique_ptr<struct module> core_module;

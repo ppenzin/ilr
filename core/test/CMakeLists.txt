@@ -19,3 +19,4 @@ macro(add_ilr_test name)
 endmacro(add_ilr_test)
 
 add_ilr_test(module-cpp module.cpp)
+add_ilr_test(instructions-cpp instructions.cpp)

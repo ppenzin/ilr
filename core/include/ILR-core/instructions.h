@@ -11,6 +11,6 @@ enum op {
 };
 
 /// Add a new entry to array of instructions
-void add_operation(ilr_t * arr, op, ...);
+void add_operation(ilr_t * dest, op, ilr_t * args, unsigned n_args); 
 
 #endif // ILR_INSTRUCTIONS_H
