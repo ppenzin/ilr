@@ -1,4 +1,5 @@
-// TODO rename, describe the file
+/// \file module.h
+/// Describes module structure (unit of compilation)
 
 #ifndef ILR_MODULE_H
 #define ILR_MODULE_H

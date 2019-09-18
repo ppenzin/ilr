@@ -3,8 +3,7 @@
 
 #include "ilr/module.h"
 
-/// IR is an array
-typedef unsigned short ilr_element_t;
+#include "ilr_private.h"
 
 struct ilr_module_ {
   ilr_element_t * module;
