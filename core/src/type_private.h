@@ -7,9 +7,7 @@
 
 struct ilr_value_type_ {
   ilr_element_t * type;
+  unsigned size;
 };
-
-/// Number of arguments to the type
-unsigned get_type_num_args(enum ilr_type t);
 
 #endif // ILR_TYPE_PRIVATE_H

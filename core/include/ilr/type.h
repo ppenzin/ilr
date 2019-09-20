@@ -10,8 +10,9 @@ enum ilr_type {
   ilr_int,
   ilr_float,
   ilr_double,
-  ilr_array,
   ilr_pointer,
+  ilr_array,
+  ilr_vector,
   ilr_struct,
   ilr_func
 };
@@ -19,13 +20,44 @@ enum ilr_type {
 /// Value type
 typedef struct ilr_value_type_ ilr_value_type_t;
 
-/// Create type
+// Create type
+
+/// Create void type
+ilr_value_type_t * ilr_type_void(void);
+
+/// Create float type
+ilr_value_type_t * ilr_type_float(void);
+/// Create double type
+ilr_value_type_t * ilr_type_double(void);
+
+/// Create int type
+/// \param size (size in bits)
+ilr_value_type_t * ilr_type_int(unsigned short size);
+
+/// Create pointer type
+/// \param pointee type
+ilr_value_type_t * ilr_type_pointer(ilr_value_type_t * element_type);
+
+/// Create array type
 ///
-/// Expected parameters
-/// - only kind for double, float, and void
-/// - kind, size for int
-/// - FIXME rest
-ilr_value_type_t * ilr_type_new(enum ilr_type kind, ...);
+/// \param size number of elements
+/// \param element_type type of array elements
+///
+/// FIXME ammount of size to support
+ilr_value_type_t * ilr_type_array(unsigned short size, ilr_value_type_t * element_type);
+
+/// Create vector type
+///
+/// \param size number of lanes
+/// \param element_type type of each lane
+///
+/// Vectors support only 16 bits of size
+ilr_value_type_t * ilr_type_vector(unsigned short size, ilr_value_type_t * element_type);
+
+// TODO
+ilr_value_type_t * ilr_type_struct(unsigned num_fields, ilr_value_type_t * element_type, ...);
+ilr_value_type_t * ilr_type_func(ilr_value_type_t * return_type, unsigned num_args, ...);
+
 /// Free type
 void ilr_type_free(ilr_value_type_t ** t);
 
@@ -36,5 +68,20 @@ enum ilr_type ilr_type_is(ilr_value_type_t * t);
 
 /// Get a width for an int
 unsigned ilr_get_int_width(ilr_value_type_t * t);
+
+/// Get type of the pointee for a pointer type
+ilr_value_type_t * ilr_get_pointee_type(ilr_value_type_t * t);
+
+/// Get array size
+unsigned short ilr_get_array_size(ilr_value_type_t * arr_type);
+
+/// Get array element type
+ilr_value_type_t * ilr_get_array_element_type(ilr_value_type_t * t);
+
+/// Get vector size
+unsigned short ilr_get_vector_size(ilr_value_type_t * vec_type);
+
+/// Get vector lane type
+ilr_value_type_t * ilr_get_vector_lane_type(ilr_value_type_t * t);
 
 #endif // ILR_TYPE_H

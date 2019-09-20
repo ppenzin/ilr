@@ -14,6 +14,8 @@ enable_testing()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+set(ILR_CORE_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
 add_subdirectory(src)
 add_subdirectory(test)
 

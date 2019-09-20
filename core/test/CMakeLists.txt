@@ -2,6 +2,8 @@ enable_testing()
 
 # TODO valgrind option
 
+include_directories(${ILR_CORE_SRC_DIR})
+
 macro(add_ilr_test name)
   add_executable(${name} ${ARGN})
   target_link_libraries(${name} ilr)
