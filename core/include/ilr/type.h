@@ -4,16 +4,26 @@
 #ifndef ILR_TYPE_H
 #define ILR_TYPE_H
 
-/// Available high level types
+/// Value types
+/// TODO type restrictions
 enum ilr_type {
   ilr_void = 0,
+  /// Integer, takes a type parameter indicating width
   ilr_int,
+  /// 32-bit floating point number
   ilr_float,
+  /// 64-bit floating point number
   ilr_double,
+  /// Pointer to a value, takes a type parameter indicating type of the pointee
   ilr_pointer,
+  /// Array of values, takes two parameters: length, and element type
   ilr_array,
+  /// Vector, takes two parameters: length (# elements) and lane type
+  /// intended for performing the same operation on all lanes
   ilr_vector,
+  /// C-style structure, parameters: number of fields, followed by types of the fields
   ilr_struct,
+  /// Function, parameters: return type, number of aguments, types of arguments
   ilr_func
 };
 
@@ -54,8 +64,13 @@ ilr_value_type_t * ilr_type_array(unsigned short size, ilr_value_type_t * elemen
 /// Vectors support only 16 bits of size
 ilr_value_type_t * ilr_type_vector(unsigned short size, ilr_value_type_t * element_type);
 
+/// Create structure type
+///
+/// \param size number of fields
+/// \param element_types array of types for the fields
+ilr_value_type_t * ilr_type_struct(unsigned num_fields, ilr_value_type_t ** element_types);
+
 // TODO
-ilr_value_type_t * ilr_type_struct(unsigned num_fields, ilr_value_type_t * element_type, ...);
 ilr_value_type_t * ilr_type_func(ilr_value_type_t * return_type, unsigned num_args, ...);
 
 /// Free type

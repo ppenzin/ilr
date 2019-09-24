@@ -86,6 +86,22 @@ int main(void) {
   CHECK(p == NULL);
   CHECK(p_elem == NULL);
 
+  ilr_value_type_t ** types = malloc(sizeof(ilr_value_type_t *) * 2);
+  types[0] = ilr_type_float();
+  types[1] = ilr_type_int(64);
+  p = ilr_type_struct(2, types);
+  CHECK(p->size == 5);
+  CHECK(p->type[0] == ilr_struct);
+  CHECK(p->type[1] == 2);
+  CHECK(p->type[2] == ilr_float);
+  CHECK(p->type[3] == ilr_int);
+  CHECK(p->type[4] == 64);
+  ilr_type_free(&types[0]);
+  ilr_type_free(&types[1]);
+
+  free(types);
+
+
   /***** Type checks *****/
 
   t.size = 1;

@@ -74,6 +74,32 @@ ilr_value_type_t * ilr_type_vector(unsigned short size, ilr_value_type_t * eleme
   return t;
 }
 
+ilr_value_type_t * ilr_type_struct(unsigned num_fields, ilr_value_type_t ** element_types) {
+  unsigned i, offset;
+
+  assert(num_fields != 0);
+
+  // Calculate size needed for the fields
+  offset = 0;
+  for (i = 0; i < num_fields; ++i) {
+    offset += element_types[i]->size;
+  }
+
+  // Init and set number of fields
+  ilr_value_type_t * t = ilr_type_init(ilr_struct, offset + 2);
+  t->type[1] = num_fields;
+
+  // Copy type data over
+  offset = 2;
+  for (i = 0; i < num_fields; ++i) {
+    memcpy(&(t->type[offset]), element_types[i]->type,
+      sizeof(ilr_element_t) * element_types[i]->size);
+    offset += element_types[i]->size;
+  }
+
+  return t;
+}
+
 void ilr_type_free(ilr_value_type_t ** t) {
   free((*t)->type);
   free(*t);
