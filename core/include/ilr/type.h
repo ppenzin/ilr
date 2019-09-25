@@ -4,8 +4,14 @@
 #ifndef ILR_TYPE_H
 #define ILR_TYPE_H
 
+// TODO type restrictions
+// - Types of vector lane elements
+// - Types of array elements
+// - Structures with no fields
+// - Use of void
+// - Use of function type
+
 /// Value types
-/// TODO type restrictions
 enum ilr_type {
   ilr_void = 0,
   /// Integer, takes a type parameter indicating width
@@ -70,8 +76,12 @@ ilr_value_type_t * ilr_type_vector(unsigned short size, ilr_value_type_t * eleme
 /// \param element_types array of types for the fields
 ilr_value_type_t * ilr_type_struct(unsigned num_fields, ilr_value_type_t ** element_types);
 
-// TODO
-ilr_value_type_t * ilr_type_func(ilr_value_type_t * return_type, unsigned num_args, ...);
+/// Create function type
+///
+/// \param return_type function return type
+/// \param num_args number of arguments
+/// \param argument_types array of types representing the arguments
+ilr_value_type_t * ilr_type_func(ilr_value_type_t * return_type, unsigned num_args, ilr_value_type_t ** argument_types);
 
 /// Free type
 void ilr_type_free(ilr_value_type_t ** t);

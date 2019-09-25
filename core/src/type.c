@@ -140,6 +140,33 @@ ilr_value_type_t * ilr_type_struct(unsigned num_fields, ilr_value_type_t ** elem
   return t;
 }
 
+ilr_value_type_t * ilr_type_func(ilr_value_type_t * return_type, unsigned num_args, ilr_value_type_t ** argument_types) {
+  unsigned i, total_size;
+
+  // Calculate the size needed
+  total_size = return_type->size + 2;
+  for (i = 0; i < num_args; ++i) {
+    total_size += argument_types[i]->size;
+  }
+
+  // Init
+  ilr_value_type_t * t = ilr_type_init(ilr_func, total_size);
+  // Number of arguments goes in first
+  t->type[1] = num_args;
+  // Then the return type
+  memcpy(&(t->type[2]), return_type->type, sizeof(ilr_element_t) * return_type->size);
+
+  // Copy the arguments
+  unsigned offset = return_type->size + 2;
+  for (i = 0; i < num_args; ++i) {
+    memcpy(t->type + offset, argument_types[i]->type,
+      sizeof(ilr_element_t) * argument_types[i]->size);
+    offset += argument_types[i]->size;
+  }
+
+  return t;
+}
+
 void ilr_type_free(ilr_value_type_t ** t) {
   free((*t)->type);
   free(*t);

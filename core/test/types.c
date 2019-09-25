@@ -99,6 +99,28 @@ int main(void) {
   ilr_type_free(&types[0]);
   ilr_type_free(&types[1]);
 
+  types = realloc(types, sizeof(ilr_value_type_t *) * 3);
+  types[0] = ilr_type_double();
+  types[1] = ilr_type_int(32);
+  p_elem = ilr_type_int(8);
+  types[2] = ilr_type_pointer(p_elem);
+  ilr_type_free(&p_elem);
+  p_elem = ilr_type_void();  // Now as a return type
+  p = ilr_type_func(p_elem, 3, types);
+  CHECK(p->type[0] == ilr_func);
+  CHECK(p->type[1] == 3);
+  CHECK(p->type[2] == ilr_void);
+  CHECK(p->type[3] == ilr_double);
+  CHECK(p->type[4] == ilr_int);
+  CHECK(p->type[5] == 32);
+  CHECK(p->type[6] == ilr_pointer);
+  CHECK(p->type[7] == ilr_int);
+  CHECK(p->type[8] == 8);
+  ilr_type_free(&p);
+  ilr_type_free(&p_elem);
+  CHECK(p == NULL);
+  CHECK(p_elem == NULL);
+
   free(types);
 
 
