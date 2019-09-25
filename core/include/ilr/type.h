@@ -99,6 +99,9 @@ unsigned short ilr_get_vector_size(ilr_value_type_t * vec_type);
 /// Get vector lane type
 ilr_value_type_t * ilr_get_vector_lane_type(ilr_value_type_t * t);
 
+/// Get number of fields in a structure type
+unsigned short ilr_get_struct_size(ilr_value_type_t * t);
+
 /// Get type of structure's field
 ilr_value_type_t * ilr_get_struct_field_type(ilr_value_type_t * t, unsigned index);
 

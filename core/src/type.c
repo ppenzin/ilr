@@ -183,6 +183,11 @@ ilr_value_type_t * ilr_get_pointee_type(ilr_value_type_t * t) {
   return pointee;
 }
 
+unsigned short ilr_get_struct_size(ilr_value_type_t * t) {
+  assert(t->type[0] == ilr_struct);
+  return(t->type[1]);
+}
+
 ilr_value_type_t * ilr_get_struct_field_type(ilr_value_type_t * t, unsigned index) {
   assert(t->type[0] == ilr_struct);
   assert(t->size > 2);

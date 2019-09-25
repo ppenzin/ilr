@@ -167,6 +167,7 @@ int main(void) {
   t.type[5] = ilr_int;
   t.type[6] = 64;
   CHECK(ilr_type_is(&t) == ilr_struct);
+  CHECK(ilr_get_struct_size(&t) == 2);
   CHECK(ilr_type_get_unboxed_size(t.type, t.size) == t.size);
   p_elem = ilr_get_struct_field_type(&t, 0);
   CHECK(p_elem->size == 3);
