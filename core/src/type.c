@@ -5,6 +5,46 @@
 
 #include "type_private.h"
 
+unsigned ilr_type_get_unboxed_size(ilr_element_t * tarr, unsigned tarr_size) {
+  enum ilr_type kind = tarr[0];
+  switch(kind) {
+    case ilr_void:
+    case ilr_float:
+    case ilr_double:
+      assert(tarr_size > 0);
+      return 1;
+    case ilr_int:
+      assert(tarr_size > 1);
+      return 2;
+    case ilr_pointer:
+      assert(tarr_size > 1);
+      return (ilr_type_get_unboxed_size(tarr + 1, tarr_size - 1) + 1);
+    case ilr_array:
+    case ilr_vector:
+      assert(tarr_size > 2);
+      return (ilr_type_get_unboxed_size(tarr + 2, tarr_size - 2) + 2);
+    case ilr_struct:
+      assert(tarr_size > 2);
+      unsigned size, field_size, i, num_fields;
+      num_fields = tarr[1];
+      size = 2;
+      tarr += 2;
+      tarr_size -= 2;
+      for (i = 0; i < num_fields; ++i) {
+        field_size = ilr_type_get_unboxed_size(tarr, tarr_size);
+	size += field_size;
+	tarr += field_size;
+	tarr_size -= field_size;
+      }
+      return size;
+    case ilr_func:
+      assert(tarr_size > 3);
+      assert(0 && "FIXME unimplemented");
+    default:
+      assert(0);
+  }
+}
+
 enum ilr_type ilr_type_is(ilr_value_type_t * t) {
   assert(t->type);
 
@@ -140,6 +180,28 @@ ilr_value_type_t * ilr_get_pointee_type(ilr_value_type_t * t) {
   assert(t->type[0] == ilr_pointer);
   ilr_value_type_t * pointee = ilr_type_init(t->type[1], t->size - 1);
   memcpy(&(pointee->type[1]), &(t->type[2]), sizeof(ilr_element_t) * (pointee->size - 1));
+  return pointee;
+}
+
+ilr_value_type_t * ilr_get_struct_field_type(ilr_value_type_t * t, unsigned index) {
+  assert(t->type[0] == ilr_struct);
+  assert(t->size > 2);
+
+  unsigned num_fields = t->type[1];
+  ilr_element_t * type_ptr = t->type + 2;
+  unsigned rem_size = t->size - 2;
+
+  int i;
+  for (i = 0; i < index; ++i) {
+    unsigned size = ilr_type_get_unboxed_size(type_ptr, rem_size);
+    type_ptr += size;
+    rem_size -= size;
+  }
+
+  unsigned size = ilr_type_get_unboxed_size(type_ptr, rem_size);
+  ilr_value_type_t * pointee = ilr_type_init(type_ptr[0], size);
+  memcpy(&(pointee->type[1]), &(type_ptr[1]), sizeof(ilr_element_t) * (size - 1));
+
   return pointee;
 }
 

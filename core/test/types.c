@@ -117,6 +117,7 @@ int main(void) {
   t.type = realloc(t.type, t.size * sizeof(ilr_element_t));
   t.type[0] = ilr_int;
   t.type[1] = 8;
+  CHECK(ilr_type_get_unboxed_size(t.type, t.size) == t.size);
   CHECK(ilr_type_is(&t) == ilr_int);
   CHECK(ilr_get_int_width(&t) == 8);
 
@@ -125,6 +126,7 @@ int main(void) {
   t.type[0] = ilr_pointer;
   t.type[1] = ilr_int;
   t.type[2] = 16;
+  CHECK(ilr_type_get_unboxed_size(t.type, t.size) == t.size);
   CHECK(ilr_type_is(&t) == ilr_pointer);
   p_elem = ilr_get_pointee_type(&t);
   CHECK(p_elem->size == 2);
@@ -136,6 +138,7 @@ int main(void) {
   t.type[0] = ilr_array;
   t.type[1] = 1000;
   t.type[2] = ilr_double;
+  CHECK(ilr_type_get_unboxed_size(t.type, t.size) == t.size);
   CHECK(ilr_type_is(&t) == ilr_array);
   CHECK(ilr_get_array_size(&t) == 1000);
   p_elem = ilr_get_array_element_type(&t);
@@ -146,12 +149,36 @@ int main(void) {
   t.type[0] = ilr_vector;
   t.type[1] = 4;
   t.type[2] = ilr_float;
+  CHECK(ilr_type_get_unboxed_size(t.type, t.size) == t.size);
   CHECK(ilr_type_is(&t) == ilr_vector);
   CHECK(ilr_get_vector_size(&t) == 4);
   p_elem = ilr_get_vector_lane_type(&t);
   CHECK(ilr_type_is(p_elem) == ilr_float);
   ilr_type_free(&p_elem);
   CHECK(p_elem == NULL);
+
+  t.size = 7;
+  t.type = realloc(t.type, t.size * sizeof(ilr_element_t));
+  t.type[0] = ilr_struct;
+  t.type[1] = 2;
+  t.type[2] = ilr_pointer;
+  t.type[3] = ilr_int;
+  t.type[4] = 8;
+  t.type[5] = ilr_int;
+  t.type[6] = 64;
+  CHECK(ilr_type_is(&t) == ilr_struct);
+  CHECK(ilr_type_get_unboxed_size(t.type, t.size) == t.size);
+  p_elem = ilr_get_struct_field_type(&t, 0);
+  CHECK(p_elem->size == 3);
+  CHECK(p_elem->type[0] == ilr_pointer);
+  CHECK(p_elem->type[1] == ilr_int);
+  CHECK(p_elem->type[2] == 8);
+  ilr_type_free(&p_elem);
+  p_elem = ilr_get_struct_field_type(&t, 1);
+  CHECK(p_elem->size == 2);
+  CHECK(p_elem->type[0] == ilr_int);
+  CHECK(p_elem->type[1] == 64);
+  ilr_type_free(&p_elem);
 
   free(t.type);
 
