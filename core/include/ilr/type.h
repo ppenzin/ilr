@@ -115,4 +115,17 @@ unsigned short ilr_get_struct_size(ilr_value_type_t * t);
 /// Get type of structure's field
 ilr_value_type_t * ilr_get_struct_field_type(ilr_value_type_t * t, unsigned index);
 
+// TODO get field types as an array
+
+/// Get function return type
+ilr_value_type_t * ilr_get_func_return_type(ilr_value_type_t * t);
+
+/// Get number of arguments for a function
+unsigned short ilr_get_func_num_args(ilr_value_type_t * t);
+
+/// Get an type of an argument
+ilr_value_type_t * ilr_get_func_argument_type(ilr_value_type_t * t, unsigned index);
+
+// TODO get argument types as an array
+
 #endif // ILR_TYPE_H

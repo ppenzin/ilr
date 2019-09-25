@@ -7,6 +7,7 @@
 
 unsigned ilr_type_get_unboxed_size(ilr_element_t * tarr, unsigned tarr_size) {
   enum ilr_type kind = tarr[0];
+  unsigned size, entry_size, num_entries, i;
   switch(kind) {
     case ilr_void:
     case ilr_float:
@@ -25,21 +26,30 @@ unsigned ilr_type_get_unboxed_size(ilr_element_t * tarr, unsigned tarr_size) {
       return (ilr_type_get_unboxed_size(tarr + 2, tarr_size - 2) + 2);
     case ilr_struct:
       assert(tarr_size > 2);
-      unsigned size, field_size, i, num_fields;
-      num_fields = tarr[1];
+      num_entries = tarr[1];
       size = 2;
       tarr += 2;
       tarr_size -= 2;
-      for (i = 0; i < num_fields; ++i) {
-        field_size = ilr_type_get_unboxed_size(tarr, tarr_size);
-	size += field_size;
-	tarr += field_size;
-	tarr_size -= field_size;
+      for (i = 0; i < num_entries; ++i) {
+        entry_size = ilr_type_get_unboxed_size(tarr, tarr_size);
+        size += entry_size;
+        tarr += entry_size;
+        tarr_size -= entry_size;
       }
       return size;
     case ilr_func:
-      assert(tarr_size > 3);
-      assert(0 && "FIXME unimplemented");
+      assert(tarr_size > 2);
+      size = 2;
+      num_entries = tarr[1] + 1; // Number of arguments + one more for return type
+      tarr +=2;
+      tarr_size -= 2;
+      for (i = 0; i < num_entries; ++ i) {
+        entry_size = ilr_type_get_unboxed_size(tarr, tarr_size);
+        size += entry_size;
+        tarr += entry_size;
+        tarr_size -= entry_size;
+      }
+      return size;
     default:
       assert(0);
   }
@@ -140,7 +150,9 @@ ilr_value_type_t * ilr_type_struct(unsigned num_fields, ilr_value_type_t ** elem
   return t;
 }
 
-ilr_value_type_t * ilr_type_func(ilr_value_type_t * return_type, unsigned num_args, ilr_value_type_t ** argument_types) {
+ilr_value_type_t * ilr_type_func(
+  ilr_value_type_t * return_type, unsigned num_args,
+  ilr_value_type_t ** argument_types) {
   unsigned i, total_size;
 
   // Calculate the size needed
@@ -215,25 +227,46 @@ unsigned short ilr_get_struct_size(ilr_value_type_t * t) {
   return(t->type[1]);
 }
 
-ilr_value_type_t * ilr_get_struct_field_type(ilr_value_type_t * t, unsigned index) {
-  assert(t->type[0] == ilr_struct);
-  assert(t->size > 2);
-
-  unsigned num_fields = t->type[1];
-  ilr_element_t * type_ptr = t->type + 2;
-  unsigned rem_size = t->size - 2;
-
-  int i;
+// Init from an entry in a list of types
+ilr_value_type_t * ilr_type_init_from_list(ilr_element_t * types,
+  unsigned size, unsigned index) {
+  unsigned i;
   for (i = 0; i < index; ++i) {
-    unsigned size = ilr_type_get_unboxed_size(type_ptr, rem_size);
-    type_ptr += size;
-    rem_size -= size;
+    unsigned entry_size = ilr_type_get_unboxed_size(types, size);
+    types += entry_size;
+    size -= entry_size;
   }
 
-  unsigned size = ilr_type_get_unboxed_size(type_ptr, rem_size);
-  ilr_value_type_t * pointee = ilr_type_init(type_ptr[0], size);
-  memcpy(&(pointee->type[1]), &(type_ptr[1]), sizeof(ilr_element_t) * (size - 1));
+  size = ilr_type_get_unboxed_size(types, size);
+  ilr_value_type_t * t = ilr_type_init(types[0], size);
+  memcpy(t->type + 1, types + 1, sizeof(ilr_element_t) * (size - 1));
 
-  return pointee;
+  return t;
+}
+
+ilr_value_type_t * ilr_get_struct_field_type(ilr_value_type_t * t, unsigned index) {
+  assert(t->type[0] == ilr_struct);
+  assert(index < t->type[1]);
+  return ilr_type_init_from_list(t->type + 2, t->size, index);
+}
+
+ilr_value_type_t * ilr_get_func_return_type(ilr_value_type_t * t) {
+  assert(t->type[0] == ilr_func);
+  ilr_value_type_t * ret
+    = ilr_type_init(t->type[2], ilr_type_get_unboxed_size(t->type + 2, t->size - 2));
+  memcpy(ret->type + 1, t->type + 3, ret->size - 1);
+  return ret;
+}
+
+unsigned short ilr_get_func_num_args(ilr_value_type_t * t) {
+  assert(t->type[0] == ilr_func);
+  return t->type[1];
+}
+
+
+ilr_value_type_t * ilr_get_func_argument_type(ilr_value_type_t * t, unsigned index) {
+  assert(t->type[0] == ilr_func);
+  assert(index < t->type[1]);
+  return ilr_type_init_from_list(t->type + 2, t->size, index + 1);
 }
 
