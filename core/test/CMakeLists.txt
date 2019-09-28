@@ -1,12 +1,12 @@
 enable_testing()
 
-# TODO valgrind option
+add_subdirectory(util)
 
-include_directories(${ILR_CORE_SRC_DIR})
+include_directories(${ILR_CORE_SRC_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/util)
 
 macro(add_ilr_test name)
   add_executable(${name} ${ARGN})
-  target_link_libraries(${name} ilr)
+  target_link_libraries(${name} ilr testcheck)
 
   add_ilr_test_command(${name} ${ARGN})
 endmacro(add_ilr_test)

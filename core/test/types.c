@@ -1,20 +1,11 @@
-/* Test type manipulations */
+/* \file types.c Test type manipulations */
+
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 
+#include "check.h"
+
 #include "type_private.h"
-
-bool all_passed = true;
-
-void check(const char * label, bool expression) {
-  if (!expression) {
-    printf("Failed: %s\n", label);
-    all_passed = false;
-  }
-}
-
-#define CHECK(X) check(#X, (X))
 
 int main(void) {
   unsigned i;
@@ -247,5 +238,5 @@ int main(void) {
 
   free(t.type);
 
-  return (!all_passed);
+  return check_report();
 }
