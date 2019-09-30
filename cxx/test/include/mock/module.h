@@ -6,8 +6,8 @@
 
 namespace mock {
 namespace module {
-    Snapshot<ilr_mock_t> &ilr_new_module();
-    Snapshot<ilr_mock_t> &ilr_free_module();
+  Snapshot<ilr_mock_t> &ilr_new_module();
+  Snapshot<ilr_mock_t> &ilr_free_module();
 } // module
 } // mock
 

@@ -1,9 +1,7 @@
 #ifndef MODULE_H
 #define MODULE_H
 
-extern "C" {
 #include "ilr/module.h"
-}
 
 namespace ilr {
 
