@@ -4,6 +4,10 @@
 #ifndef ILR_TYPE_H
 #define ILR_TYPE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // TODO type restrictions
 // - Types of vector lane elements
 // - Types of array elements
@@ -128,5 +132,9 @@ unsigned short ilr_get_func_num_args(ilr_value_type_t * t);
 ilr_value_type_t * ilr_get_func_argument_type(ilr_value_type_t * t, unsigned index);
 
 // TODO get argument types as an array
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif // ILR_TYPE_H

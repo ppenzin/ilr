@@ -12,3 +12,4 @@ macro(add_ilr_cxx_test name)
 endmacro(add_ilr_cxx_test)
 
 add_ilr_cxx_test(module-cpp module.cpp)
+add_ilr_cxx_test(type-cpp type.cpp)
