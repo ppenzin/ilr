@@ -10,8 +10,8 @@ int main() {
   Module * m = new Module();
   delete m;
 
-  test::verify(mock::module::called_ilr_new_module(), (unsigned)1);
-  test::verify(mock::module::called_ilr_free_module(), (unsigned)1);
+  test::verify(mock::module::ilr_new_module().getNumCalls(), (unsigned)1);
+  test::verify(mock::module::ilr_free_module().getNumCalls(), (unsigned)1);
 
   return test::report();
 }
