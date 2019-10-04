@@ -13,6 +13,7 @@
 
 /// Value types
 enum ilr_type {
+  // 'void' type
   ilr_void = 0,
   /// Integer, takes a type parameter indicating width
   ilr_int,
