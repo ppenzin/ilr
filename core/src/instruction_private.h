@@ -10,4 +10,10 @@ struct ilr_instruction_ {
   unsigned size;
 };
 
+struct ilr_block_ {
+  // Instructions of the block get allocated inside of this
+  ilr_instruction_t code;
+};
+
+
 #endif // ILR_INSTRUCTION_PRIVATE_H
