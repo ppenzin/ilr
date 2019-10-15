@@ -10,6 +10,7 @@ namespace type {
   Snapshot<ilr_mock_t>&ilr_type_void();
   Snapshot<ilr_mock_t>&ilr_type_float();
   Snapshot<ilr_mock_t>&ilr_type_double();
+  Snapshot<ilr_mock_t>&ilr_type_pointer();
 } // module
 } // mock
 
