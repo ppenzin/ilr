@@ -19,8 +19,12 @@ int main() {
 
   t = Type::CreateDoubleType();
   test::verify(mock::type::ilr_type_double().getNumCalls(), (unsigned)1);
+  Type * t1 = Type::CreatePointerType(t);
+  test::verify(mock::type::ilr_type_pointer().getNumCalls(), (unsigned)1);
   delete t;
   test::verify(mock::type::ilr_type_free().getNumCalls(), (unsigned)3);
+  delete t1;
+  test::verify(mock::type::ilr_type_free().getNumCalls(), (unsigned)4);
 
   return test::report();
 }

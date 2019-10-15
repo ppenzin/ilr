@@ -28,6 +28,8 @@ public:
   static Type * CreateFloatType();
   /// Create a double type
   static Type * CreateDoubleType();
+  /// Create a pointer type
+  static Type * CreatePointerType(Type * pointee);
 };
 
 } // namespace ilr
