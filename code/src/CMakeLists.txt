@@ -3,4 +3,5 @@ add_library(ilr
   instruction.c
   module.c
   type.c
+  variable_int.c
 )
