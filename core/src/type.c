@@ -254,7 +254,7 @@ ilr_value_type_t * ilr_get_func_return_type(ilr_value_type_t * t) {
   assert(t->type[0] == ilr_func);
   ilr_value_type_t * ret
     = ilr_type_init(t->type[2], ilr_type_get_unboxed_size(t->type + 2, t->size - 2));
-  memcpy(ret->type + 1, t->type + 3, ret->size - 1);
+  memcpy(ret->type + 1, t->type + 3, sizeof(ilr_element_t) * (ret->size - 1));
   return ret;
 }
 
