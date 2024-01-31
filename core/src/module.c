@@ -6,7 +6,7 @@ ilr_module_t * ilr_new_module(void) {
   ilr_module_t * module = malloc(sizeof(ilr_module_t));
   module->module = NULL;
   module->size = 0;
-  return (malloc(4 * sizeof(ilr_element_t)));
+  return module;
 }
 
 void ilr_free_module(ilr_module_t ** module) {
