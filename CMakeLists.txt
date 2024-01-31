@@ -10,4 +10,4 @@ enable_testing()
 include(tests)
 
 add_subdirectory(core)
-add_subdirectory(cxx)
+#add_subdirectory(cxx)
