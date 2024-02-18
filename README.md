@@ -7,6 +7,6 @@ Compiler intermediate representation library with focus on cross-language portab
 $ git clone https://github.com/ppenzin/ilr.git
 $ mkdir build
 $ cd build
-$ cmake ..
+$ cmake ../ilr
 $ make check
 ```
