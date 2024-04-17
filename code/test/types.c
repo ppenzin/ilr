@@ -65,9 +65,9 @@ int main(void) {
   CHECK(p_entry == NULL);
 
   p_entry = ilr_type_double();
-  p = ilr_type_vector(4, p_entry);
+  p = ilr_type_scaled(4, p_entry);
   CHECK(p->size == p_entry->size + 2);
-  CHECK(p->type[0] == ilr_vector);
+  CHECK(p->type[0] == ilr_scaled);
   CHECK(p->type[1] == 4);
   for (i = 0; i < p_entry->size; ++i) {
     CHECK(p->type[i + 2] == p_entry->type[i]);
@@ -159,13 +159,13 @@ int main(void) {
   ilr_type_free(&p_entry);
   CHECK(p_entry == NULL);
 
-  t.type[0] = ilr_vector;
+  t.type[0] = ilr_scaled;
   t.type[1] = 4;
   t.type[2] = ilr_float;
   CHECK(ilr_type_get_unboxed_size(t.type, t.size) == t.size);
-  CHECK(ilr_type_is(&t) == ilr_vector);
-  CHECK(ilr_get_vector_size(&t) == 4);
-  p_entry = ilr_get_vector_lane_type(&t);
+  CHECK(ilr_type_is(&t) == ilr_scaled);
+  CHECK(ilr_get_scaled_size(&t) == 4);
+  p_entry = ilr_get_scaled_lane_type(&t);
   CHECK(ilr_type_is(p_entry) == ilr_float);
   ilr_type_free(&p_entry);
   CHECK(p_entry == NULL);
