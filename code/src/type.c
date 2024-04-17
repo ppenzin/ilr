@@ -21,7 +21,7 @@ unsigned ilr_type_get_unboxed_size(ilr_element_t * tarr, unsigned tarr_size) {
       assert(tarr_size > 1);
       return (ilr_type_get_unboxed_size(tarr + 1, tarr_size - 1) + 1);
     case ilr_array:
-    case ilr_vector:
+    case ilr_scaled:
       assert(tarr_size > 2);
       return (ilr_type_get_unboxed_size(tarr + 2, tarr_size - 2) + 2);
     case ilr_struct:
@@ -114,9 +114,9 @@ ilr_value_type_t * ilr_type_array(unsigned short size, ilr_value_type_t * elemen
   return t;
 }
 
-ilr_value_type_t * ilr_type_vector(unsigned short size, ilr_value_type_t * element_type) {
+ilr_value_type_t * ilr_type_scaled(unsigned short size, ilr_value_type_t * element_type) {
   // Allocate enough space to store entire pointee type
-  ilr_value_type_t * t = ilr_type_init(ilr_vector, element_type->size + 2);
+  ilr_value_type_t * t = ilr_type_init(ilr_scaled, element_type->size + 2);
   // Set size
   t->type[1] = size;
   // Copy element type
@@ -203,13 +203,13 @@ ilr_value_type_t * ilr_get_array_element_type(ilr_value_type_t * t) {
   return elem;
 }
 
-unsigned short ilr_get_vector_size(ilr_value_type_t * vec_type) {
-  assert(vec_type->type[0] == ilr_vector);
+unsigned short ilr_get_scaled_size(ilr_value_type_t * vec_type) {
+  assert(vec_type->type[0] == ilr_scaled);
   return vec_type->type[1];
 }
 
-ilr_value_type_t * ilr_get_vector_lane_type(ilr_value_type_t * t) {
-  assert(t->type[0] == ilr_vector);
+ilr_value_type_t * ilr_get_scaled_lane_type(ilr_value_type_t * t) {
+  assert(t->type[0] == ilr_scaled);
   ilr_value_type_t * elem = ilr_type_init(t->type[2], t->size - 2);
   memcpy(&(elem->type[1]), &(t->type[3]), sizeof(ilr_element_t) * (elem->size - 1));
   return elem;

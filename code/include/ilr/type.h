@@ -29,9 +29,10 @@ enum ilr_type {
   ilr_pointer,
   /// Array of values, takes two parameters: length, and element type
   ilr_array,
-  /// Vector, takes two parameters: length (# elements) and lane type
-  /// intended for performing the same operation on all lanes
-  ilr_vector,
+  /// Fixed-width scaled (vector) type, takes two parameters: length (number of
+  /// elements) and lane type / intended for performing the same operation on all
+  /// lanes
+  ilr_scaled,
   /// C-style structure, parameters: number of fields, followed by types of the fields
   ilr_struct,
   /// Function, parameters: return type, number of aguments, types of arguments
@@ -67,13 +68,13 @@ ilr_value_type_t * ilr_type_pointer(ilr_value_type_t * element_type);
 /// FIXME ammount of size to support
 ilr_value_type_t * ilr_type_array(unsigned short size, ilr_value_type_t * element_type);
 
-/// Create vector type
+/// Create scaled type
 ///
 /// \param size number of lanes
 /// \param element_type type of each lane
 ///
 /// Vectors support only 16 bits of size
-ilr_value_type_t * ilr_type_vector(unsigned short size, ilr_value_type_t * element_type);
+ilr_value_type_t * ilr_type_scaled(unsigned short size, ilr_value_type_t * element_type);
 
 /// Create structure type
 ///
@@ -108,11 +109,11 @@ unsigned short ilr_get_array_size(ilr_value_type_t * arr_type);
 /// Get array element type
 ilr_value_type_t * ilr_get_array_element_type(ilr_value_type_t * t);
 
-/// Get vector size
-unsigned short ilr_get_vector_size(ilr_value_type_t * vec_type);
+/// Get scaled size
+unsigned short ilr_get_scaled_size(ilr_value_type_t * vec_type);
 
-/// Get vector lane type
-ilr_value_type_t * ilr_get_vector_lane_type(ilr_value_type_t * t);
+/// Get scaled lane type
+ilr_value_type_t * ilr_get_scaled_lane_type(ilr_value_type_t * t);
 
 /// Get number of fields in a structure type
 unsigned short ilr_get_struct_size(ilr_value_type_t * t);
