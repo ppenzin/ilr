@@ -33,6 +33,8 @@ enum ilr_type {
   /// elements) and lane type / intended for performing the same operation on all
   /// lanes
   ilr_scaled,
+  /// Variable-length vector, parameterized by element type
+  ilr_vector,
   /// C-style structure, parameters: number of fields, followed by types of the fields
   ilr_struct,
   /// Function, parameters: return type, number of aguments, types of arguments
@@ -53,7 +55,7 @@ ilr_value_type_t * ilr_type_float(void);
 ilr_value_type_t * ilr_type_double(void);
 
 /// Create int type
-/// \param size (size in bits)
+/// \param size (size in bits), minimum 1 bit (TODO upper limit)
 ilr_value_type_t * ilr_type_int(unsigned short size);
 
 /// Create pointer type
@@ -70,11 +72,18 @@ ilr_value_type_t * ilr_type_array(unsigned short size, ilr_value_type_t * elemen
 
 /// Create scaled type
 ///
-/// \param size number of lanes
-/// \param element_type type of each lane
+/// \param size number of elements
+/// \param element_type type of each elements
 ///
 /// Vectors support only 16 bits of size
 ilr_value_type_t * ilr_type_scaled(unsigned short size, ilr_value_type_t * element_type);
+
+/// Create length-agnostic vector type
+///
+/// \param element_type type of each lane
+///
+/// Vectors support only 16 bits of size
+ilr_value_type_t * ilr_type_vector(ilr_value_type_t * element_type);
 
 /// Create structure type
 ///
@@ -102,6 +111,9 @@ unsigned ilr_get_int_width(ilr_value_type_t * t);
 
 /// Get type of the pointee for a pointer type
 ilr_value_type_t * ilr_get_pointee_type(ilr_value_type_t * t);
+
+/// Get type of the lane for a vector type
+ilr_value_type_t * ilr_get_vector_lane_type(ilr_value_type_t * t);
 
 /// Get array size
 unsigned short ilr_get_array_size(ilr_value_type_t * arr_type);

@@ -17,6 +17,7 @@ unsigned ilr_type_get_unboxed_size(ilr_element_t * tarr, unsigned tarr_size) {
     case ilr_int:
       assert(tarr_size > 1);
       return 2;
+    case ilr_vector:
     case ilr_pointer:
       assert(tarr_size > 1);
       return (ilr_type_get_unboxed_size(tarr + 1, tarr_size - 1) + 1);
@@ -87,7 +88,7 @@ ilr_value_type_t * ilr_type_double(void) {
 }
 
 ilr_value_type_t * ilr_type_int(unsigned short size) {
-  assert(size > 0);
+  assert(size > 0); // FIXME test
   // Allcoate a value with an extra slot for bit count
   ilr_value_type_t * t = ilr_type_init(ilr_int, 2);
   // Store bit count
@@ -115,12 +116,20 @@ ilr_value_type_t * ilr_type_array(unsigned short size, ilr_value_type_t * elemen
 }
 
 ilr_value_type_t * ilr_type_scaled(unsigned short size, ilr_value_type_t * element_type) {
-  // Allocate enough space to store entire pointee type
+  // Allocate enough space to store entire element type
   ilr_value_type_t * t = ilr_type_init(ilr_scaled, element_type->size + 2);
   // Set size
   t->type[1] = size;
   // Copy element type
   memcpy(&(t->type[2]), element_type->type, sizeof(ilr_element_t) * element_type->size);
+  return t;
+}
+
+ilr_value_type_t * ilr_type_vector(ilr_value_type_t * element_type) {
+  // Allocate enough space to store entire lane type
+  ilr_value_type_t * t = ilr_type_init(ilr_vector, element_type->size + 1);
+  // Copy element type
+  memcpy(&(t->type[1]), element_type->type, sizeof(ilr_element_t) * element_type->size);
   return t;
 }
 
@@ -220,6 +229,13 @@ ilr_value_type_t * ilr_get_pointee_type(ilr_value_type_t * t) {
   ilr_value_type_t * pointee = ilr_type_init(t->type[1], t->size - 1);
   memcpy(&(pointee->type[1]), &(t->type[2]), sizeof(ilr_element_t) * (pointee->size - 1));
   return pointee;
+}
+
+ilr_value_type_t * ilr_get_vector_lane_type(ilr_value_type_t * t) {
+  assert(t->type[0] == ilr_vector);
+  ilr_value_type_t * lane = ilr_type_init(t->type[1], t->size - 1);
+  memcpy(&(lane->type[1]), &(t->type[2]), sizeof(ilr_element_t) * (lane->size - 1));
+  return lane;
 }
 
 unsigned short ilr_get_struct_size(ilr_value_type_t * t) {
