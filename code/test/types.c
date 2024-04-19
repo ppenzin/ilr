@@ -77,6 +77,18 @@ int main(void) {
   CHECK(p == NULL);
   CHECK(p_entry == NULL);
 
+  p_entry = ilr_type_int(32);
+  p = ilr_type_vector(p_entry);
+  CHECK(p->size == p_entry->size + 1);
+  CHECK(p->type[0] == ilr_vector);
+  for (i = 0; i < p_entry->size; ++i) {
+    CHECK(p->type[i + 1] == p_entry->type[i]);
+  }
+  ilr_type_free(&p);
+  ilr_type_free(&p_entry);
+  CHECK(p == NULL);
+  CHECK(p_entry == NULL);
+
   ilr_value_type_t ** types = malloc(sizeof(ilr_value_type_t *) * 2);
   types[0] = ilr_type_float();
   types[1] = ilr_type_int(64);
@@ -145,6 +157,18 @@ int main(void) {
   CHECK(p_entry->size == 2);
   CHECK(p_entry->type[0] == ilr_int);
   CHECK(p_entry->type[1] == 16);
+  ilr_type_free(&p_entry);
+  CHECK(p_entry == NULL);
+
+  t.type[0] = ilr_vector;
+  t.type[1] = ilr_int;
+  t.type[2] = 64;
+  CHECK(ilr_type_get_unboxed_size(t.type, t.size) == t.size);
+  CHECK(ilr_type_is(&t) == ilr_vector);
+  p_entry = ilr_get_vector_lane_type(&t);
+  CHECK(p_entry->size == 2);
+  CHECK(p_entry->type[0] == ilr_int);
+  CHECK(p_entry->type[1] == 64);
   ilr_type_free(&p_entry);
   CHECK(p_entry == NULL);
 
